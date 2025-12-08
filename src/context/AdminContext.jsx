@@ -4,7 +4,7 @@ export const AdminContext = createContext();
 
 const AdminContextProvider = (props) => {
     // Here, we crate a variable in context by which we will store the access token.
-    const [aToken, setAToken] = useState("");
+    const [aToken, setAToken] = useState(localStorage.getItem("aToken")?localStorage.getItem("aToken"):"");
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const value = {
         aToken, setAToken,
