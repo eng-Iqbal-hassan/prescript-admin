@@ -3,7 +3,7 @@ import { AdminContext } from '../../context/AdminContext'
 
 const DoctorsList = () => {
 
-  const {doctors, aToken, getAllDoctors} = useContext(AdminContext);
+  const {doctors, aToken, getAllDoctors, changeAvailability} = useContext(AdminContext);
 
   useEffect(()=>{
     if(aToken) {
@@ -23,7 +23,7 @@ const DoctorsList = () => {
                 <p className='text-neutral-800 text-lg font-medium'>{item.name}</p>
                 <p className='text-zinc-600 text-sm'>{item.speciality}</p>
                 <div className='mt-2 flex items-center gap-1 text-sm'>
-                  <input type="checkbox" checked={item.available} />
+                  <input onChange={()=> changeAvailability(item._id)} type="checkbox" checked={item.available} />
                   <p>Available</p>
                 </div>
               </div>
@@ -32,6 +32,8 @@ const DoctorsList = () => {
         }
       </div>
     </div>
+
+    // After this first step of fetching the data for all doctors, In backend, we will make the functionality to click on the checkbox in the frontend by which data in the database will be modified and the avaialble field of any doctor can be toggled (between true and false) in database.
   )
 }
 
