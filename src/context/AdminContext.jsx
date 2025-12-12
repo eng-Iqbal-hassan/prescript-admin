@@ -6,7 +6,8 @@ export const AdminContext = createContext();
 const AdminContextProvider = (props) => {
     // Here, we crate a variable in context by which we will store the access token.
     const [aToken, setAToken] = useState(localStorage.getItem("aToken")?localStorage.getItem("aToken"):"");
-    const [doctors, setDoctors] = useState([])
+    const [doctors, setDoctors] = useState([]);
+    const [appointments, setAppointments] = useState([]);
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const getAllDoctors = async () => {
@@ -42,11 +43,42 @@ const AdminContextProvider = (props) => {
         }
     }
 
+    const getAllAppointments = async() => {
+        try {
+            const {data} = await axios.get(backendUrl+"/api/admin/appointments",{headers: {aToken}});
+            if (data.success) {
+                console.log(data.appointments);
+                setAppointments(data.appointments);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    } 
+
+    const cancelAppointment = async(appointmentId) => {
+        try {
+            const {data} = await axios.post(backendUrl+"/api/admin/cancel-appointment",{appointmentId},{headers:{aToken}})
+            if(data.success) {
+                getAllAppointments();
+                toast.success(data.message)
+            } else {
+                toast.error(data.error)
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
+    }
+
     const value = {
         aToken, setAToken,
         backendUrl, 
         doctors, getAllDoctors,
         changeAvailability,
+        appointments, setAppointments,
+        getAllAppointments,
+        cancelAppointment,
     }
 
     return(
