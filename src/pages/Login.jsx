@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AdminContext } from '../context/AdminContext';
 import axios from "axios";
 import { toast } from 'react-toastify';
+import { DoctorContext } from '../context/DoctorContext';
 
 const Login = () => {
 
@@ -10,6 +11,7 @@ const Login = () => {
     const [password, setPassword] = useState("")
 
     const {setAToken, backendUrl} = useContext(AdminContext);
+    const {setDToken} = useContext(DoctorContext)
     // By using these destructured variables we can make API call in our page, 
 
     const onSubmitHandler = async (e) => {
@@ -28,10 +30,20 @@ const Login = () => {
           }
 
         } else {
-
+          const {data} = await axios.post(backendUrl + "/api/doctor/login",{email, password});
+          if(data.success) {
+            console.log(data.token);
+            console.log("data is", data)
+            localStorage.setItem("dToken",data.token);
+            setDToken(data.token)
+            toast.success("You havev successfully logged in")
+          } else {
+            toast.error(data.message)
+          }
         }
       } catch (error) {
-        
+        console.log(error);
+        toast.error(error.message)
       }
     }
 
